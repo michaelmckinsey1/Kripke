@@ -328,7 +328,6 @@ struct Policy_LTimes<ArchLayoutT<ArchT_CUDA, LayoutT_ZGD>> {
         >
       >;
 };
-
 #endif // KRIPKE_USE_CUDA
 
 
@@ -402,7 +401,8 @@ struct Policy_LTimes<ArchLayoutT<ArchT_HIP, LayoutT_GDZ>> {
               >
             >
           >
-        >;
+        >
+      >;
 };
 
 template<>
@@ -477,7 +477,6 @@ struct Policy_LTimes<ArchLayoutT<ArchT_HIP, LayoutT_ZGD>> {
         >
       >;
 };
-
 #endif // KRIPKE_USE_HIP
 }
 }
