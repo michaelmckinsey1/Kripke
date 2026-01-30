@@ -261,7 +261,7 @@ template<>
 struct Policy_LTimes<ArchLayoutT<ArchT_CUDA, LayoutT_GZD>> {
     using ExecPolicy =
       KernelPolicy<
-        CudaKernel<
+        CudaKernelAsync<
           For<2, cuda_block_x_loop, // group
             For<3, cuda_block_y_loop, // zone
               For<0, cuda_thread_x_loop, // moment
@@ -410,7 +410,7 @@ template<>
 struct Policy_LTimes<ArchLayoutT<ArchT_HIP, LayoutT_GZD>> {
     using ExecPolicy =
       KernelPolicy<
-        HipKernel<
+        HipKernelAsync<
           For<2, hip_block_x_loop, // group
             For<3, hip_block_y_loop, // zone
               For<0, hip_thread_x_loop, // moment
