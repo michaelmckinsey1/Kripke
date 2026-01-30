@@ -49,14 +49,14 @@ void Kripke::SweepSolver (Kripke::Core::DataStore &data_store, std::vector<SdomI
   auto &field_upwind = data_store.getVariable<Field_Adjacency>("upwind");
 
   /* Loop until we have finished all of our work */
-  while(comm->workRemaining()){
+  while(comm->workRemaining()) {
 
     std::vector<SdomId> sdom_ready = comm->readySubdomains();
-    int backlog = sdom_ready.size();
 
-    // Run top of list
-    if(backlog > 0){
-      SdomId sdom_id = sdom_ready[0];
+    // Run the ready list
+    for (auto ii = 0; ii < sdom_ready.size(); ++ii) {
+    
+      SdomId sdom_id = sdom_ready[ii];
 
       auto upwind = field_upwind.getView(sdom_id);
 
@@ -78,6 +78,13 @@ void Kripke::SweepSolver (Kripke::Core::DataStore &data_store, std::vector<SdomI
       comm->markComplete(sdom_id);
     }
   }
+
+// async execution needs synchronization
+#if defined(KRIPKE_USE_CUDA)
+  RAJA::synchronize<RAJA::cuda_synchronize>();
+#elif defined(KRIPKE_USE_HIP)
+  RAJA::synchronize<RAJA::hip_synchronize>();
+#endif
 
   delete comm;
 

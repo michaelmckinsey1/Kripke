@@ -207,7 +207,7 @@ template<>
 struct Policy_LTimes<ArchLayoutT<ArchT_CUDA, LayoutT_DGZ>> {
   using ExecPolicy =
     KernelPolicy<
-      CudaKernel<
+      CudaKernelAsync<
         For<0, cuda_block_x_loop, // moment
           For<1, cuda_block_y_loop, // direction
             For<2, cuda_thread_x_loop, // group
@@ -225,7 +225,7 @@ template<>
 struct Policy_LTimes<ArchLayoutT<ArchT_CUDA, LayoutT_DZG>> {
     using ExecPolicy =
       KernelPolicy<
-        CudaKernel<
+        CudaKernelAsync<
           For<0, cuda_block_x_loop, // moment
             For<1, cuda_block_y_loop, // direction
               For<3, cuda_thread_x_loop, // zone
@@ -243,10 +243,10 @@ template<>
 struct Policy_LTimes<ArchLayoutT<ArchT_CUDA, LayoutT_GDZ>> {
     using ExecPolicy =
       KernelPolicy<
-        RAJA::statement::CudaKernelFixedAsync<256,
-          For<2, RAJA::cuda_global_size_z_direct<2>, // group
-            For<0, RAJA::cuda_global_size_y_direct<4>, // moment
-              For<1, RAJA::cuda_global_size_x_direct<32>, // direction
+        CudaKernelAsync<
+          For<2, cuda_block_x_loop, // group
+            For<0, cuda_block_y_loop, // moment
+              For<1, cuda_thread_x_loop, // direction
                 For<3, seq_exec, // zone
                   Lambda<0>
                 >
@@ -261,7 +261,7 @@ template<>
 struct Policy_LTimes<ArchLayoutT<ArchT_CUDA, LayoutT_GZD>> {
     using ExecPolicy =
       KernelPolicy<
-        CudaKernel<
+        CudaKernelAsync<
           For<2, cuda_block_x_loop, // group
             For<3, cuda_block_y_loop, // zone
               For<0, cuda_thread_x_loop, // moment
@@ -279,7 +279,7 @@ template<>
 struct Policy_LTimes<ArchLayoutT<ArchT_CUDA, LayoutT_ZDG>> {
     using ExecPolicy =
       KernelPolicy<
-        CudaKernel<
+        CudaKernelAsync<
           For<3, cuda_block_x_loop, // zone
             For<0, cuda_block_y_loop, // moment
               For<1, cuda_thread_x_loop, // direction
@@ -315,10 +315,10 @@ template<>
 struct Policy_LTimes<ArchLayoutT<ArchT_CUDA, LayoutT_ZGD>> {
     using ExecPolicy =
       KernelPolicy<
-        RAJA::statement::CudaKernelFixedAsync<256,
-          For<3, RAJA::cuda_global_size_z_direct<2>, // zone
-            For<2, RAJA::cuda_global_size_y_direct<4>, // group
-              For<0, RAJA::cuda_global_size_x_direct<32>, // moment
+        CudaKernelAsync<
+          For<3, cuda_block_x_loop, // zone
+            For<2, cuda_block_y_loop, // group
+              For<0, cuda_thread_x_loop, // moment
                 For<1, seq_exec, // direction
                   Lambda<0>
                 >
@@ -337,7 +337,7 @@ template<>
 struct Policy_LTimes<ArchLayoutT<ArchT_HIP, LayoutT_DGZ>> {
   using ExecPolicy =
     KernelPolicy<
-      HipKernel<
+      HipKernelAsync<
         For<0, hip_block_x_loop, // moment
           For<1, hip_block_y_loop, // direction
             For<2, hip_thread_x_loop, // group
@@ -355,7 +355,7 @@ template<>
 struct Policy_LTimes<ArchLayoutT<ArchT_HIP, LayoutT_DZG>> {
     using ExecPolicy =
       KernelPolicy<
-        HipKernel<
+        HipKernelAsync<
           For<0, hip_block_x_loop, // moment
             For<1, hip_block_y_loop, // direction
               For<3, hip_thread_x_loop, // zone
@@ -391,14 +391,13 @@ struct Policy_LTimes<ArchLayoutT<ArchT_HIP, LayoutT_DZG>> {
 template<>
 struct Policy_LTimes<ArchLayoutT<ArchT_HIP, LayoutT_GDZ>> {
     using ExecPolicy =
-        RAJA::KernelPolicy<
-          RAJA::statement::HipKernelFixedAsync<256,
-            RAJA::statement::For<2, RAJA::hip_global_size_z_direct<2>,     //g
-              RAJA::statement::For<0, RAJA::hip_global_size_y_direct<4>,   //m
-                RAJA::statement::For<1, RAJA::hip_global_size_x_direct<32>, //d
-                  RAJA::statement::For<3, RAJA::seq_exec,          //z
-                    RAJA::statement::Lambda<0>
-                  >
+      KernelPolicy<
+        HipKernelAsync<
+          For<2, hip_block_x_loop, // group
+            For<0, hip_block_y_loop, // moment
+              For<1, hip_thread_x_loop, // direction
+                For<3, seq_exec, // zone
+                  Lambda<0>
                 >
               >
             >
@@ -410,7 +409,7 @@ template<>
 struct Policy_LTimes<ArchLayoutT<ArchT_HIP, LayoutT_GZD>> {
     using ExecPolicy =
       KernelPolicy<
-        HipKernel<
+        HipKernelAsync<
           For<2, hip_block_x_loop, // group
             For<3, hip_block_y_loop, // zone
               For<0, hip_thread_x_loop, // moment
@@ -428,7 +427,7 @@ template<>
 struct Policy_LTimes<ArchLayoutT<ArchT_HIP, LayoutT_ZDG>> {
     using ExecPolicy =
       KernelPolicy<
-        HipKernel<
+        HipKernelAsync<
           For<3, hip_block_x_loop, // zone
             For<0, hip_block_y_loop, // moment
               For<1, hip_thread_x_loop, // direction
@@ -465,10 +464,10 @@ template<>
 struct Policy_LTimes<ArchLayoutT<ArchT_HIP, LayoutT_ZGD>> {
     using ExecPolicy =
       KernelPolicy<
-        RAJA::statement::HipKernelFixedAsync<256,
-          For<3, RAJA::hip_global_size_z_direct<2>, // zone
-            For<2, RAJA::hip_global_size_y_direct<4>, // group
-              For<0, RAJA::hip_global_size_x_direct<32>, // moment
+        HipKernelAsync<
+          For<3, hip_block_x_loop, // zone
+            For<2, hip_block_y_loop, // group
+              For<0, hip_thread_x_loop, // moment
                 For<1, seq_exec, // direction
                   Lambda<0>
                 >

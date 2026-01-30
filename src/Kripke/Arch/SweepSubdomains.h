@@ -247,14 +247,14 @@ template<>
 struct Policy_SweepSubdomains<ArchLayoutT<ArchT_CUDA, LayoutT_DGZ>> {
   using ExecPolicy =
           KernelPolicy<
-            CudaKernel<
-              For<0, cuda_block_x_loop,
-                For<1, cuda_block_y_loop,
+            CudaKernelAsync<
+              For<0, cuda_block_x_loop, // direction
+                For<1, cuda_block_y_loop, // group
 
-                  For<3, cuda_thread_syncable_y_loop,
-                    For<4, cuda_thread_syncable_x_loop,
+                  For<3, cuda_thread_syncable_y_loop, // j
+                    For<4, cuda_thread_syncable_x_loop, // i
                       Hyperplane<
-                        2, seq_exec, ArgList<3, 4>,
+                        2, seq_exec, ArgList<3, 4>, // k
 
                         Lambda<0>,
                         CudaSyncThreads
@@ -273,7 +273,7 @@ template<>
 struct Policy_SweepSubdomains<ArchLayoutT<ArchT_CUDA, LayoutT_DZG>> {
     using ExecPolicy =
             KernelPolicy<
-              CudaKernel<
+              CudaKernelAsync<
                 For<0, cuda_block_x_loop,
                   For<1, cuda_block_y_loop,
 
@@ -299,7 +299,7 @@ template<>
 struct Policy_SweepSubdomains<ArchLayoutT<ArchT_CUDA, LayoutT_GDZ>> {
     using ExecPolicy =
             KernelPolicy<
-              CudaKernel<
+              CudaKernelAsync<
                 For<0, cuda_block_x_loop,
                   For<1, cuda_block_y_loop,
 
@@ -325,7 +325,7 @@ template<>
 struct Policy_SweepSubdomains<ArchLayoutT<ArchT_CUDA, LayoutT_GZD>> {
     using ExecPolicy =
             KernelPolicy<
-              CudaKernel<
+              CudaKernelAsync<
                 For<0, cuda_block_x_loop,
                   For<1, cuda_block_y_loop,
 
@@ -351,7 +351,7 @@ template<>
 struct Policy_SweepSubdomains<ArchLayoutT<ArchT_CUDA, LayoutT_ZDG>> {
     using ExecPolicy =
             KernelPolicy<
-              CudaKernel<
+              CudaKernelAsync<
                 For<0, cuda_block_x_loop,
                   For<1, cuda_block_y_loop,
 
@@ -377,7 +377,7 @@ template<>
 struct Policy_SweepSubdomains<ArchLayoutT<ArchT_CUDA, LayoutT_ZGD>> {
     using ExecPolicy =
             KernelPolicy<
-              CudaKernel<
+              CudaKernelAsync<
                 For<0, cuda_block_x_loop,
                   For<1, cuda_block_y_loop,
 
@@ -404,14 +404,14 @@ template<>
 struct Policy_SweepSubdomains<ArchLayoutT<ArchT_HIP, LayoutT_DGZ>> {
   using ExecPolicy =
           KernelPolicy<
-            HipKernel<
-              For<0, hip_block_x_loop,
-                For<1, hip_block_y_loop,
+            HipKernelAsync<
+              For<0, hip_block_x_loop,  // direction
+                For<1, hip_block_y_loop,  // group
 
-                  For<3, hip_thread_syncable_y_loop,
-                    For<4, hip_thread_syncable_x_loop,
+                  For<3, hip_thread_syncable_y_loop,  // j
+                    For<4, hip_thread_syncable_x_loop,  // i
                       Hyperplane<
-                        2, seq_exec, ArgList<3, 4>,
+                        2, seq_exec, ArgList<3, 4>, // k
 
                         Lambda<0>,
                         HipSyncThreads
@@ -430,7 +430,7 @@ template<>
 struct Policy_SweepSubdomains<ArchLayoutT<ArchT_HIP, LayoutT_DZG>> {
     using ExecPolicy =
             KernelPolicy<
-              HipKernel<
+              HipKernelAsync<
                 For<0, hip_block_x_loop,
                   For<1, hip_block_y_loop,
 
@@ -456,7 +456,7 @@ template<>
 struct Policy_SweepSubdomains<ArchLayoutT<ArchT_HIP, LayoutT_GDZ>> {
     using ExecPolicy =
             KernelPolicy<
-              HipKernel<
+              HipKernelAsync<
                 For<0, hip_block_x_loop,
                   For<1, hip_block_y_loop,
 
@@ -482,7 +482,7 @@ template<>
 struct Policy_SweepSubdomains<ArchLayoutT<ArchT_HIP, LayoutT_GZD>> {
     using ExecPolicy =
             KernelPolicy<
-              HipKernel<
+              HipKernelAsync<
                 For<0, hip_block_x_loop,
                   For<1, hip_block_y_loop,
 
@@ -508,7 +508,7 @@ template<>
 struct Policy_SweepSubdomains<ArchLayoutT<ArchT_HIP, LayoutT_ZDG>> {
     using ExecPolicy =
             KernelPolicy<
-              HipKernel<
+              HipKernelAsync<
                 For<0, hip_block_x_loop,
                   For<1, hip_block_y_loop,
 
@@ -534,7 +534,7 @@ template<>
 struct Policy_SweepSubdomains<ArchLayoutT<ArchT_HIP, LayoutT_ZGD>> {
     using ExecPolicy =
             KernelPolicy<
-              HipKernel<
+              HipKernelAsync<
                 For<0, hip_block_x_loop,
                   For<1, hip_block_y_loop,
 
