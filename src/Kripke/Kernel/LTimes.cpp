@@ -54,19 +54,23 @@ struct LTimesSdom {
 
     std::cout << "psi=" << psi.size() << " phi=" << phi.size() << " ell=" << ell.size() << std::endl;
 
+    auto res{camp::resources::Host::get_default()};
+
+    auto ltimes_lam = [=](Moment nm, Direction d, Group g, Zone z) {
+        phi(nm,g,z) += ell(nm, d) * psi(d, g, z);
+      };
+
+    std::cout << "new kernel_resource" << std::endl;
     cali_begin_region("ltimessdom_kernel");
     // Compute:  phi =  ell * psi
-    RAJA::kernel<ExecPolicy>(
-        camp::make_tuple(
+    RAJA::kernel_resource<ExecPolicy>(
+        RAJA::make_tuple(
             RAJA::TypedRangeSegment<Moment>(0, num_moments),
             RAJA::TypedRangeSegment<Direction>(0, num_directions),
             RAJA::TypedRangeSegment<Group>(0, num_groups),
             RAJA::TypedRangeSegment<Zone>(0, num_zones) ),
-        KRIPKE_LAMBDA (Moment nm, Direction d, Group g, Zone z) {
-
-           phi(nm,g,z) += ell(nm, d) * psi(d, g, z);
-
-        }
+          res,
+          ltimes_lam
     );
     #ifdef KRIPKE_USE_HIP
       hipDeviceSynchronize();
