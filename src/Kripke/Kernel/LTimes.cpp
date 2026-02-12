@@ -54,13 +54,18 @@ struct LTimesSdom {
 
     std::cout << "psi=" << psi.size() << " phi=" << phi.size() << " ell=" << ell.size() << std::endl;
 
-    auto res{camp::resources::Host::get_default()};
+    #ifdef KRIPKE_USE_HIP
+      auto res{camp::resources::Hip::get_default()};
+    #elif defined(KRIPKE_USE_CUDA)
+      auto res{camp::resources::Cuda::get_default()};
+    #else
+      auto res{camp::resources::Host::get_default()};
+    #endif
 
     auto ltimes_lam = [=](Moment nm, Direction d, Group g, Zone z) {
         phi(nm,g,z) += ell(nm, d) * psi(d, g, z);
       };
 
-    std::cout << "new kernel_resource" << std::endl;
     cali_begin_region("ltimessdom_kernel");
     // Compute:  phi =  ell * psi
     RAJA::kernel_resource<ExecPolicy>(
