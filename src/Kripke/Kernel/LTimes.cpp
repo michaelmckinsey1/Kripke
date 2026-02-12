@@ -45,14 +45,14 @@ struct LTimesSdom {
     int num_moments =    set_moment.size(sdom_id);
     int num_zones =      set_zone.size(sdom_id);
 
-    std::cout << "d=" << num_directions << " g=" << num_groups << " m=" << num_moments << " z=" << num_zones << std::endl;
+    //std::cout << "d=" << num_directions << " g=" << num_groups << " m=" << num_moments << " z=" << num_zones << std::endl;
 
     // Get pointers
     auto psi = sdom_al.getView(field_psi);
     auto phi = sdom_al.getView(field_phi);
     auto ell = sdom_al.getView(field_ell);
 
-    std::cout << "psi=" << psi.size() << " phi=" << phi.size() << " ell=" << ell.size() << std::endl;
+    //std::cout << "psi=" << psi.size() << " phi=" << phi.size() << " ell=" << ell.size() << std::endl;
 
     #ifdef KRIPKE_USE_HIP
       auto res{camp::resources::Hip::get_default()};
@@ -62,7 +62,7 @@ struct LTimesSdom {
       auto res{camp::resources::Host::get_default()};
     #endif
 
-    auto ltimes_lam = [=](Moment nm, Direction d, Group g, Zone z) {
+    auto ltimes_lam = KRIPKE_LAMBDA (Moment nm, Direction d, Group g, Zone z) {
         phi(nm,g,z) += ell(nm, d) * psi(d, g, z);
       };
 
