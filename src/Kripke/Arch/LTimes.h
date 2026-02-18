@@ -293,7 +293,6 @@ struct Policy_LTimes<ArchLayoutT<ArchT_CUDA, LayoutT_ZDG>> {
       >;
 };
 
-
 template<>
 struct Policy_LTimes<ArchLayoutT<ArchT_CUDA, LayoutT_ZGD>> {
     using ExecPolicy =
@@ -351,7 +350,6 @@ struct Policy_LTimes<ArchLayoutT<ArchT_HIP, LayoutT_DZG>> {
       >;
 };
 
-
 template<>
 struct Policy_LTimes<ArchLayoutT<ArchT_HIP, LayoutT_GDZ>> {
     using ExecPolicy =
@@ -405,7 +403,6 @@ struct Policy_LTimes<ArchLayoutT<ArchT_HIP, LayoutT_ZDG>> {
         >
       >;
 };
-
 
 template<>
 struct Policy_LTimes<ArchLayoutT<ArchT_HIP, LayoutT_ZGD>> {
