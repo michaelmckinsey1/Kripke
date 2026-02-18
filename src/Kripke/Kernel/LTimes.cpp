@@ -45,37 +45,24 @@ struct LTimesSdom {
     int num_moments =    set_moment.size(sdom_id);
     int num_zones =      set_zone.size(sdom_id);
 
-    //std::cout << "d=" << num_directions << " g=" << num_groups << " m=" << num_moments << " z=" << num_zones << std::endl;
-
     // Get pointers
     auto psi = sdom_al.getView(field_psi);
     auto phi = sdom_al.getView(field_phi);
     auto ell = sdom_al.getView(field_ell);
 
-    //std::cout << "psi=" << psi.size() << " phi=" << phi.size() << " ell=" << ell.size() << std::endl;
-
-    #ifdef KRIPKE_USE_HIP
-      auto res{camp::resources::Hip::get_default()};
-    #elif defined(KRIPKE_USE_CUDA)
-      auto res{camp::resources::Cuda::get_default()};
-    #else
-      auto res{camp::resources::Host::get_default()};
-    #endif
-
-    auto ltimes_lam = KRIPKE_LAMBDA (Moment nm, Direction d, Group g, Zone z) {
-        phi(nm,g,z) += ell(nm, d) * psi(d, g, z);
-      };
-
     cali_begin_region("ltimessdom_kernel");
     // Compute:  phi =  ell * psi
-    RAJA::kernel_resource<ExecPolicy>(
-        RAJA::make_tuple(
+    RAJA::kernel<ExecPolicy>(
+        camp::make_tuple(
             RAJA::TypedRangeSegment<Moment>(0, num_moments),
             RAJA::TypedRangeSegment<Direction>(0, num_directions),
             RAJA::TypedRangeSegment<Group>(0, num_groups),
             RAJA::TypedRangeSegment<Zone>(0, num_zones) ),
-          res,
-          ltimes_lam
+        KRIPKE_LAMBDA (Moment nm, Direction d, Group g, Zone z) {
+
+           phi(nm,g,z) += ell(nm, d) * psi(d, g, z);
+
+        }
     );
     #ifdef KRIPKE_USE_HIP
       hipDeviceSynchronize();
@@ -130,7 +117,6 @@ void Kripke::Kernel::LTimes(Kripke::Core::DataStore &data_store)
     cali_end_region(region_name.c_str());
     i = i + 1;
   }
-
 
 }
 

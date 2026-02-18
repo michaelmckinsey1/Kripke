@@ -293,23 +293,6 @@ struct Policy_LTimes<ArchLayoutT<ArchT_CUDA, LayoutT_ZDG>> {
       >;
 };
 
-// template<>
-// struct Policy_LTimes<ArchLayoutT<ArchT_CUDA, LayoutT_ZGD>> {
-//     using ExecPolicy =
-//       KernelPolicy<
-//         CudaKernel<
-//           For<3, cuda_block_x_loop, // zone
-//             For<2, cuda_block_y_loop, // group
-//               For<0, cuda_thread_x_loop, // moment
-//                 For<1, seq_exec, // direction
-//                   Lambda<0>
-//                 >
-//               >
-//             >
-//           >
-//         >
-//       >;
-// };
 
 template<>
 struct Policy_LTimes<ArchLayoutT<ArchT_CUDA, LayoutT_ZGD>> {
@@ -368,24 +351,6 @@ struct Policy_LTimes<ArchLayoutT<ArchT_HIP, LayoutT_DZG>> {
       >;
 };
 
-// template<>
-// struct Policy_LTimes<ArchLayoutT<ArchT_HIP, LayoutT_GDZ>> {
-//     using ExecPolicy =
-//       KernelPolicy<
-//         HipKernel<
-//           For<2, hip_block_x_loop, // group
-//             For<0, hip_block_y_loop, // moment
-//               For<1, hip_thread_x_loop, // direction
-//                 For<3, seq_exec, // zone
-//                   Lambda<0>
-//                 >
-//               >
-//             >
-//           >
-//         >
-//       >;
-// };
-
 
 template<>
 struct Policy_LTimes<ArchLayoutT<ArchT_HIP, LayoutT_GDZ>> {
@@ -440,24 +405,6 @@ struct Policy_LTimes<ArchLayoutT<ArchT_HIP, LayoutT_ZDG>> {
         >
       >;
 };
-
-// template<>
-// struct Policy_LTimes<ArchLayoutT<ArchT_HIP, LayoutT_ZGD>> {
-//     using ExecPolicy =
-//       KernelPolicy<
-//         HipKernel<
-//           For<3, hip_block_x_loop, // zone
-//             For<2, hip_block_y_loop, // group
-//               For<0, hip_thread_x_loop, // moment
-//                 For<1, seq_exec, // direction
-//                   Lambda<0>
-//                 >
-//               >
-//             >
-//           >
-//         >
-//       >;
-// };
 
 
 template<>
