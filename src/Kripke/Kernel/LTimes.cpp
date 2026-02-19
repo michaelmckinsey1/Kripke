@@ -32,7 +32,8 @@ struct LTimesSdom {
                   Set const       &set_moment,
                   Field_Flux      &field_psi,
                   Field_Moments   &field_phi,
-                  Field_Ell       &field_ell) const
+                  Field_Ell       &field_ell,
+                  size_t          num_reps) const
   {
 
     using ExecPolicy = typename Kripke::Arch::Policy_LTimes<AL>::ExecPolicy;
@@ -52,18 +53,20 @@ struct LTimesSdom {
 
     cali_begin_region("ltimessdom_kernel");
     // Compute:  phi =  ell * psi
-    RAJA::kernel<ExecPolicy>(
-        camp::make_tuple(
-            RAJA::TypedRangeSegment<Moment>(0, num_moments),
-            RAJA::TypedRangeSegment<Direction>(0, num_directions),
-            RAJA::TypedRangeSegment<Group>(0, num_groups),
-            RAJA::TypedRangeSegment<Zone>(0, num_zones) ),
-        KRIPKE_LAMBDA (Moment nm, Direction d, Group g, Zone z) {
+    for(size_t iter = 0;iter < num_reps;++ iter){
+      RAJA::kernel<ExecPolicy>(
+          camp::make_tuple(
+              RAJA::TypedRangeSegment<Moment>(0, num_moments),
+              RAJA::TypedRangeSegment<Direction>(0, num_directions),
+              RAJA::TypedRangeSegment<Group>(0, num_groups),
+              RAJA::TypedRangeSegment<Zone>(0, num_zones) ),
+          KRIPKE_LAMBDA (Moment nm, Direction d, Group g, Zone z) {
 
-           phi(nm,g,z) += ell(nm, d) * psi(d, g, z);
+            phi(nm,g,z) += ell(nm, d) * psi(d, g, z);
 
-        }
-    );
+          }
+      );
+    }
     #ifdef KRIPKE_USE_HIP
       hipDeviceSynchronize();
     #elif defined(KRIPKE_USE_CUDA)
@@ -103,11 +106,9 @@ void Kripke::Kernel::LTimes(Kripke::Core::DataStore &data_store, size_t num_reps
     std::string region_name = "ltimes_kernel_" + std::to_string(i);
     cali_begin_region(region_name.c_str());
 
-    for(size_t iter = 0;iter < num_reps;++ iter){
-      Kripke::dispatch(al_v, LTimesSdom{}, sdom_id,
-                      set_dir, set_group, set_zone, set_moment,
-                      field_psi, field_phi, field_ell);
-    }
+    Kripke::dispatch(al_v, LTimesSdom{}, sdom_id,
+                    set_dir, set_group, set_zone, set_moment,
+                    field_psi, field_phi, field_ell, num_reps);
 
     #ifdef KRIPKE_USE_HIP
       hipDeviceSynchronize();
