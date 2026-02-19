@@ -392,6 +392,9 @@ int main(int argc, char **argv) {
     else if(opt == "--dev_pool_size"){
       vars.dev_pool_size = std::atoi(cmd.pop().c_str());     
     }
+    else if(opt == "--reps"){
+      vars.num_reps = std::atoi(cmd.pop().c_str());
+    }
     else{
       printf("Unknwon options %s\n", opt.c_str());
       usage();
@@ -488,6 +491,7 @@ int main(int argc, char **argv) {
   adiak::value("groups", vars.num_groups);
   adiak::value("legendre_order", vars.legendre_order);
   adiak::value("dset", vars.num_dirsets);
+  adiak::value("reps", vars.num_reps);
 
   if (vars.parallel_method == PMETHOD_SWEEP)
       adiak::value("parallel_method", "sweep");
@@ -504,7 +508,7 @@ int main(int argc, char **argv) {
   Kripke::generateProblem(data_store, vars);
 
   // Run the solver
-  Kripke::SteadyStateSolver(data_store, vars.niter, vars.parallel_method == PMETHOD_BJ);
+  Kripke::SteadyStateSolver(data_store, vars.niter, vars.parallel_method == PMETHOD_BJ, vars.num_reps);
 
   // Print Timing Info
   auto &timing = data_store.getVariable<Kripke::Timing>("timing");

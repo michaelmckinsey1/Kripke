@@ -48,6 +48,8 @@ struct InputVariables {
   
   // Output Options
   std::string run_name;         // Name to use when generating output files
+
+  int num_reps;
 };
 
 #endif

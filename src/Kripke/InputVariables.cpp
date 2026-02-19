@@ -32,7 +32,8 @@ InputVariables::InputVariables() :
   parallel_method(PMETHOD_SWEEP),
   num_material_subsamples(4),
   dev_pool_size(4),
-  run_name("kripke")
+  run_name("kripke"),
+  num_reps(1)
 {
   num_zonesets_dim[0] = 1; 
   num_zonesets_dim[1] = 1;

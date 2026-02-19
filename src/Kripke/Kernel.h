@@ -19,7 +19,7 @@ namespace Kripke {
     void LPlusTimes(Kripke::Core::DataStore &data_store);
 
 
-    void LTimes(Kripke::Core::DataStore &data_store);
+    void LTimes(Kripke::Core::DataStore &data_store, size_t num_reps);
 
 
     double population(Kripke::Core::DataStore &data_store);

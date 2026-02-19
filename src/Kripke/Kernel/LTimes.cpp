@@ -82,7 +82,7 @@ const std::string LTimesSdom::KernelName = "LTimes";
 
 
 
-void Kripke::Kernel::LTimes(Kripke::Core::DataStore &data_store)
+void Kripke::Kernel::LTimes(Kripke::Core::DataStore &data_store, size_t num_reps)
 {
   KRIPKE_TIMER(data_store, LTimes);
 
@@ -103,9 +103,11 @@ void Kripke::Kernel::LTimes(Kripke::Core::DataStore &data_store)
     std::string region_name = "ltimes_kernel_" + std::to_string(i);
     cali_begin_region(region_name.c_str());
 
-    Kripke::dispatch(al_v, LTimesSdom{}, sdom_id,
-                     set_dir, set_group, set_zone, set_moment,
-                     field_psi, field_phi, field_ell);
+    for(size_t iter = 0;iter < num_reps;++ iter){
+      Kripke::dispatch(al_v, LTimesSdom{}, sdom_id,
+                      set_dir, set_group, set_zone, set_moment,
+                      field_psi, field_phi, field_ell);
+    }
 
     #ifdef KRIPKE_USE_HIP
       hipDeviceSynchronize();
